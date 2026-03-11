@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pokemon Stats</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="stats-page">
+    <a href="index.html" class="back-link">&larr; Back</a>
+    <div id="loading" class="loading">Loading...</div>
+    <div id="error" class="error" hidden>
+      <p>Could not load Pokemon data.</p>
+    </div>
+    <div id="content" class="pokemon-content" hidden>
+      <h1 id="pokemon-name"></h1>
+      <img id="pokemon-sprite" src="" alt="">
+      <div class="pokemon-info">
+        <p><strong>Height:</strong> <span id="pokemon-height"></span></p>
+        <p><strong>Weight:</strong> <span id="pokemon-weight"></span></p>
+        <p><strong>Types:</strong> <span id="pokemon-types"></span></p>
+      </div>
+      <table class="stats-table">
+        <thead>
+          <tr>
+            <th>Stat</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody id="stats-body">
+        </tbody>
+      </table>
+    </div>
+  </main>
+  <script src="pokemon.js"></script>
+</body>
+</html>
