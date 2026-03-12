@@ -1,0 +1,7 @@
+{
+  "name": "pokemon-pokeapi",
+  "private": true,
+  "scripts": {
+    "start": "npx serve -l 3000"
+  }
+}

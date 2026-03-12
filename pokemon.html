@@ -3,34 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pokemon Stats</title>
+  <title>Pokemon Details</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <main class="stats-page">
+  <main class="detail">
     <a href="index.html" class="back-link">&larr; Back</a>
-    <div id="loading" class="loading">Loading...</div>
-    <div id="error" class="error" hidden>
-      <p>Could not load Pokemon data.</p>
-    </div>
-    <div id="content" class="pokemon-content" hidden>
-      <h1 id="pokemon-name"></h1>
-      <img id="pokemon-sprite" src="" alt="">
-      <div class="pokemon-info">
-        <p><strong>Height:</strong> <span id="pokemon-height"></span></p>
-        <p><strong>Weight:</strong> <span id="pokemon-weight"></span></p>
-        <p><strong>Types:</strong> <span id="pokemon-types"></span></p>
+    <div id="pokemon-content">
+      <div id="loading">Loading...</div>
+      <div id="error" class="hidden"></div>
+      <div id="pokemon-detail" class="hidden">
+        <h1 id="pokemon-name"></h1>
+        <div id="pokemon-types" class="types"></div>
+        <img id="pokemon-sprite" alt="" class="sprite">
+        <p id="pokemon-description" class="description"></p>
+        <table id="pokemon-stats" class="stats-table">
+          <tbody></tbody>
+        </table>
       </div>
-      <table class="stats-table">
-        <thead>
-          <tr>
-            <th>Stat</th>
-            <th>Value</th>
-          </tr>
-        </thead>
-        <tbody id="stats-body">
-        </tbody>
-      </table>
     </div>
   </main>
   <script src="pokemon.js"></script>

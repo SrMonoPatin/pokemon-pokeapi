@@ -1,86 +1,112 @@
-(function () {
+const ALLOWED = ['pikachu', 'squirtle', 'bulbasaur', 'charmander'];
+const API_BASE = 'https://pokeapi.co/api/v2';
+
+function getQueryParam(name) {
   const params = new URLSearchParams(window.location.search);
-  const name = params.get('name');
+  return params.get(name);
+}
 
-  const loadingEl = document.getElementById('loading');
-  const errorEl = document.getElementById('error');
-  const contentEl = document.getElementById('content');
+function show(el) {
+  el.classList.remove('hidden');
+}
 
-  const allowedNames = ['pikachu', 'squirtle', 'charmander', 'bulbasaur'];
+function hide(el) {
+  el.classList.add('hidden');
+}
 
-  function showLoading() {
-    loadingEl.hidden = false;
-    errorEl.hidden = true;
-    contentEl.hidden = true;
-  }
+function getDescription(species) {
+  const entry = species.flavor_text_entries?.find(
+    (e) => e.language?.name === 'en'
+  );
+  if (!entry) return 'No description available.';
+  return entry.flavor_text.replace(/\n|\f/g, ' ').trim();
+}
 
-  function showError() {
-    loadingEl.hidden = true;
-    errorEl.hidden = false;
-    contentEl.hidden = true;
-  }
+async function fetchPokemon(name) {
+  const res = await fetch(`${API_BASE}/pokemon/${name}`);
+  if (!res.ok) throw new Error('Pokemon not found');
+  return res.json();
+}
 
-  function showContent() {
-    loadingEl.hidden = true;
-    errorEl.hidden = true;
-    contentEl.hidden = false;
-  }
+async function fetchSpecies(id) {
+  const res = await fetch(`${API_BASE}/pokemon-species/${id}`);
+  if (!res.ok) throw new Error('Species not found');
+  return res.json();
+}
 
-  function capitalize(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  }
+function render(pokemon, species) {
+  const loading = document.getElementById('loading');
+  const error = document.getElementById('error');
+  const detail = document.getElementById('pokemon-detail');
 
-  function formatStatName(statName) {
-    const map = {
-      hp: 'HP',
-      attack: 'Attack',
-      defense: 'Defense',
-      'special-attack': 'Sp. Atk',
-      'special-defense': 'Sp. Def',
-      speed: 'Speed'
-    };
-    return map[statName] || statName;
-  }
+  hide(loading);
+  hide(error);
+  show(detail);
 
-  function render(data) {
-    document.getElementById('pokemon-name').textContent = capitalize(data.name);
-    document.getElementById('pokemon-sprite').src = data.sprites.front_default;
-    document.getElementById('pokemon-sprite').alt = data.name;
+  const sprite =
+    pokemon.sprites?.other?.['official-artwork']?.front_default ||
+    pokemon.sprites?.front_default;
 
-    document.getElementById('pokemon-height').textContent = data.height / 10 + ' m';
-    document.getElementById('pokemon-weight').textContent = data.weight / 10 + ' kg';
-    document.getElementById('pokemon-types').textContent = data.types
-      .map(function (t) { return capitalize(t.type.name); })
-      .join(', ');
+  document.getElementById('pokemon-name').textContent =
+    pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1);
+  document.title = `${pokemon.name} | Pokemon`;
 
-    const tbody = document.getElementById('stats-body');
-    tbody.innerHTML = '';
+  const typesEl = document.getElementById('pokemon-types');
+  typesEl.innerHTML = '';
+  (pokemon.types || []).forEach((t) => {
+    const span = document.createElement('span');
+    span.className = 'type-badge';
+    span.textContent = t.type?.name || t;
+    typesEl.appendChild(span);
+  });
 
-    data.stats.forEach(function (s) {
-      const row = document.createElement('tr');
-      row.innerHTML =
-        '<td>' + formatStatName(s.stat.name) + '</td>' +
-        '<td>' + s.base_stat + '</td>';
-      tbody.appendChild(row);
-    });
+  const img = document.getElementById('pokemon-sprite');
+  img.src = sprite || '';
+  img.alt = pokemon.name;
 
-    showContent();
-  }
+  document.getElementById('pokemon-description').textContent = getDescription(
+    species
+  );
 
-  if (!name || !allowedNames.includes(name)) {
-    showError();
+  const tbody = document.querySelector('#pokemon-stats tbody');
+  tbody.innerHTML = '';
+  (pokemon.stats || []).forEach((s) => {
+    const row = document.createElement('tr');
+    const statName = (s.stat?.name || '').replace(/-/g, ' ');
+    row.innerHTML = `<th>${statName}</th><td>${s.base_stat ?? ''}</td>`;
+    tbody.appendChild(row);
+  });
+}
+
+function showError(msg) {
+  const loading = document.getElementById('loading');
+  const error = document.getElementById('error');
+  const detail = document.getElementById('pokemon-detail');
+
+  hide(loading);
+  hide(detail);
+  show(error);
+  error.textContent = msg;
+}
+
+async function init() {
+  const name = getQueryParam('name')?.toLowerCase();
+
+  if (!name || !ALLOWED.includes(name)) {
+    showError('Invalid Pokemon. Redirecting...');
+    setTimeout(() => (window.location.href = 'index.html'), 1500);
     return;
   }
 
-  showLoading();
+  try {
+    const [pokemon, species] = await Promise.all([
+      fetchPokemon(name),
+      fetchPokemon(name).then((p) => fetchSpecies(p.id)),
+    ]);
+    render(pokemon, species);
+  } catch (err) {
+    showError(err.message || 'Failed to load Pokemon.');
+  }
+}
 
-  fetch('https://pokeapi.co/api/v2/pokemon/' + encodeURIComponent(name))
-    .then(function (res) {
-      if (!res.ok) throw new Error('Not found');
-      return res.json();
-    })
-    .then(render)
-    .catch(function () {
-      showError();
-    });
-})();
+init();
