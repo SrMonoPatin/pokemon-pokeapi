@@ -4,27 +4,50 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pokemon</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <div class="bg-pattern"></div>
   <main class="landing">
-    <h1>Pokemon</h1>
+    <header class="landing-header">
+      <h1>Pokemon</h1>
+      <p class="landing-subtitle">Choose your starter</p>
+    </header>
     <div class="pokemon-grid">
-      <a href="pokemon.html?name=pikachu" class="pokemon-card">
-        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" alt="Pikachu">
-        <span class="pokemon-name">Pikachu</span>
+      <a href="pokemon.html?name=pikachu" class="pokemon-card" data-type="electric">
+        <div class="card-glow"></div>
+        <div class="card-inner">
+          <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png" alt="Pikachu">
+          <span class="pokemon-name">Pikachu</span>
+          <span class="pokemon-type-label">Electric</span>
+        </div>
       </a>
-      <a href="pokemon.html?name=squirtle" class="pokemon-card">
-        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png" alt="Squirtle">
-        <span class="pokemon-name">Squirtle</span>
+      <a href="pokemon.html?name=squirtle" class="pokemon-card" data-type="water">
+        <div class="card-glow"></div>
+        <div class="card-inner">
+          <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png" alt="Squirtle">
+          <span class="pokemon-name">Squirtle</span>
+          <span class="pokemon-type-label">Water</span>
+        </div>
       </a>
-      <a href="pokemon.html?name=bulbasaur" class="pokemon-card">
-        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png" alt="Bulbasaur">
-        <span class="pokemon-name">Bulbasaur</span>
+      <a href="pokemon.html?name=bulbasaur" class="pokemon-card" data-type="grass">
+        <div class="card-glow"></div>
+        <div class="card-inner">
+          <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png" alt="Bulbasaur">
+          <span class="pokemon-name">Bulbasaur</span>
+          <span class="pokemon-type-label">Grass</span>
+        </div>
       </a>
-      <a href="pokemon.html?name=charmander" class="pokemon-card">
-        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png" alt="Charmander">
-        <span class="pokemon-name">Charmander</span>
+      <a href="pokemon.html?name=charmander" class="pokemon-card" data-type="fire">
+        <div class="card-glow"></div>
+        <div class="card-inner">
+          <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png" alt="Charmander">
+          <span class="pokemon-name">Charmander</span>
+          <span class="pokemon-type-label">Fire</span>
+        </div>
       </a>
     </div>
   </main>

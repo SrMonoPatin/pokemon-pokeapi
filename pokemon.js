@@ -1,4 +1,5 @@
 const ALLOWED = ['pikachu', 'squirtle', 'bulbasaur', 'charmander'];
+const POKEAPI = 'https://pokeapi.co/api/v2';
 
 function getQueryParam(name) {
   const params = new URLSearchParams(window.location.search);
@@ -13,10 +14,36 @@ function hide(el) {
   el.classList.add('hidden');
 }
 
+function getDescription(species) {
+  const entry = species?.flavor_text_entries?.find((e) => e.language?.name === 'en');
+  if (!entry) return 'No description available.';
+  return entry.flavor_text.replace(/\n|\f/g, ' ').trim();
+}
+
 async function fetchPokemon(name) {
-  const res = await fetch(`/api/pokemon/${name}`);
-  if (!res.ok) throw new Error('Pokemon not found');
-  return res.json();
+  const pokemonRes = await fetch(`${POKEAPI}/pokemon/${name}`);
+  if (!pokemonRes.ok) throw new Error('Pokemon not found');
+  const pokemon = await pokemonRes.json();
+
+  const speciesRes = await fetch(`${POKEAPI}/pokemon-species/${pokemon.id}`);
+  const species = speciesRes.ok ? await speciesRes.json() : {};
+
+  const sprite =
+    pokemon.sprites?.other?.['official-artwork']?.front_default ||
+    pokemon.sprites?.front_default;
+
+  return {
+    name: pokemon.name,
+    description: getDescription(species),
+    sprite_url: sprite,
+    stats: (pokemon.stats || []).map((s) => ({
+      name: s.stat?.name || '',
+      base_stat: s.base_stat ?? 0,
+    })),
+    types: (pokemon.types || []).map((t) => ({
+      name: t.type?.name || t,
+    })),
+  };
 }
 
 function render(data) {
