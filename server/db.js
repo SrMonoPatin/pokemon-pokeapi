@@ -33,4 +33,63 @@ async function savePokemon(pokemon) {
   );
 }
 
-module.exports = { pool, getPokemon, savePokemon };
+async function createUser(email, passwordHash) {
+  const [result] = await pool.execute(
+    'INSERT INTO users (email, password_hash) VALUES (?, ?)',
+    [email.toLowerCase(), passwordHash]
+  );
+  return result.insertId;
+}
+
+async function getUserByEmail(email) {
+  const [rows] = await pool.execute(
+    'SELECT id, email, password_hash FROM users WHERE email = ?',
+    [email.toLowerCase()]
+  );
+  return rows[0] || null;
+}
+
+async function getUserById(id) {
+  const [rows] = await pool.execute(
+    'SELECT id, email FROM users WHERE id = ?',
+    [id]
+  );
+  return rows[0] || null;
+}
+
+async function saveCustomPokemon(data) {
+  const { userId, name, description, sprite_data, stats_json, types_json } = data;
+  const [result] = await pool.execute(
+    `INSERT INTO custom_pokemon (user_id, name, description, sprite_data, stats_json, types_json)
+     VALUES (?, ?, ?, ?, ?, ?)`,
+    [userId, name, description || '', sprite_data || null, JSON.stringify(stats_json || []), JSON.stringify(types_json || [])]
+  );
+  return result.insertId;
+}
+
+async function getCustomPokemonById(id) {
+  const [rows] = await pool.execute(
+    'SELECT id, user_id, name, description, sprite_data, stats_json, types_json, created_at FROM custom_pokemon WHERE id = ?',
+    [id]
+  );
+  return rows[0] || null;
+}
+
+async function getAllCustomPokemon() {
+  const [rows] = await pool.execute(
+    'SELECT id, name, description, sprite_data, stats_json, types_json, created_at FROM custom_pokemon ORDER BY created_at DESC'
+  );
+  return rows;
+}
+
+module.exports = {
+  pool,
+  getPokemon,
+  savePokemon,
+  createUser,
+  getUserByEmail,
+  getUserById,
+  saveCustomPokemon,
+  getCustomPokemonById,
+  getAllCustomPokemon,
+};

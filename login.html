@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | Pokemon</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="bg-pattern"></div>
+  <main class="auth-page">
+    <a href="index.html" class="back-link">&larr; Back</a>
+    <div class="auth-card">
+      <h1>Login</h1>
+      <p class="auth-subtitle">Sign in to create your own Pokemon</p>
+      <form id="login-form" class="auth-form">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required autocomplete="email">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required autocomplete="current-password">
+        <div id="auth-error" class="auth-error hidden"></div>
+        <button type="submit" class="auth-btn">Login</button>
+      </form>
+      <p class="auth-footer">Don't have an account? <a href="signup.html">Sign up</a></p>
+    </div>
+  </main>
+  <script src="auth.js"></script>
+  <script>
+    const next = new URLSearchParams(location.search).get('next') || 'create.html';
+    (async () => {
+      try {
+        const res = await fetch('/api/auth/me', { credentials: 'include' });
+        if (res.ok) {
+          window.location.href = next;
+          return;
+        }
+      } catch {}
+      initAuth('login', next);
+    })();
+  </script>
+</body>
+</html>

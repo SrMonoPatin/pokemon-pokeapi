@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <base href="https://srmonopatin.github.io/pokemon-pokeapi/">
   <title>Pokemon</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -50,7 +49,17 @@
           <span class="pokemon-type-label">Fire</span>
         </div>
       </a>
+      <a href="login.html?next=create.html" class="pokemon-card pokemon-card-custom" data-type="custom">
+        <div class="card-glow"></div>
+        <div class="card-inner">
+          <div class="custom-placeholder">+</div>
+          <span class="pokemon-name">Your Own Pokemon</span>
+          <span class="pokemon-type-label">Create</span>
+        </div>
+      </a>
     </div>
+    <div id="custom-pokemon-grid" class="pokemon-grid custom-pokemon-grid"></div>
   </main>
+  <script src="landing.js"></script>
 </body>
 </html>

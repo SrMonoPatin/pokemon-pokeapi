@@ -21,6 +21,8 @@ A Pokemon web app that fetches and caches Pokemon data in MySQL. Runs entirely i
 
 5. Click a Pokemon (Pikachu, Squirtle, Bulbasaur, or Charmander) to view details. The first visit fetches from PokeAPI and caches in MySQL; later visits load from the database.
 
+6. **Create your own Pokemon:** Click "Your Own Pokemon" to sign up or log in. Draw your Pokemon on the canvas, add stats, and post it to the landing page for everyone to see.
+
 ## Commands
 
 | Command | Description |
@@ -38,3 +40,10 @@ A Pokemon web app that fetches and caches Pokemon data in MySQL. Runs entirely i
 ## Environment Variables
 
 See `.env.example`. Default values work for local development. Create a `.env` file to override.
+
+## Custom Pokemon (New)
+
+If you already had the app running before this feature was added, you need the new database tables. Either:
+
+- **Fresh start:** `docker compose down -v` then `docker compose up --build -d` (wipes existing data)
+- **Keep data:** Run the migration: `docker compose exec mysql mysql -u root -p pokemon_db < server/migrate-add-users-custom.sql` (use your DB password)

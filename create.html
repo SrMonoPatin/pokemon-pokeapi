@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Your Pokemon | Pokemon</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="bg-pattern"></div>
+  <main class="create-page">
+    <header class="create-header">
+      <a href="index.html" class="back-link">&larr; Back</a>
+      <a href="#" id="logout-link" class="logout-link">Logout</a>
+    </header>
+    <div class="create-card">
+      <h1>Create Your Pokemon</h1>
+      <p class="create-subtitle">Draw your Pokemon and add its stats</p>
+
+      <div class="create-section">
+        <h2>Draw</h2>
+        <div class="canvas-container">
+          <canvas id="draw-canvas" width="256" height="256"></canvas>
+          <div class="color-palette">
+            <button type="button" class="color-btn active" data-color="#000000" title="Black"></button>
+            <button type="button" class="color-btn" data-color="#ffffff" title="White"></button>
+            <button type="button" class="color-btn" data-color="#ef4444" title="Red"></button>
+            <button type="button" class="color-btn" data-color="#3b82f6" title="Blue"></button>
+            <button type="button" class="color-btn" data-color="#22c55e" title="Green"></button>
+            <button type="button" class="color-btn" data-color="#eab308" title="Yellow"></button>
+            <button type="button" class="color-btn" data-color="#f97316" title="Orange"></button>
+            <button type="button" class="color-btn" data-color="#a855f7" title="Purple"></button>
+          </div>
+          <button type="button" id="clear-btn" class="clear-btn">Clear</button>
+        </div>
+      </div>
+
+      <div class="create-section">
+        <h2>Stats</h2>
+        <form id="stats-form" class="stats-form">
+          <label for="pokemon-name">Name</label>
+          <input type="text" id="pokemon-name" name="name" required placeholder="My Pokemon" maxlength="100">
+          <label for="pokemon-description">Description</label>
+          <textarea id="pokemon-description" name="description" rows="3" placeholder="A short description..."></textarea>
+          <div class="stats-grid">
+            <label for="hp">HP</label>
+            <input type="number" id="hp" name="hp" min="0" max="255" value="50">
+            <label for="attack">Attack</label>
+            <input type="number" id="attack" name="attack" min="0" max="255" value="50">
+            <label for="defense">Defense</label>
+            <input type="number" id="defense" name="defense" min="0" max="255" value="50">
+            <label for="special-attack">Special Attack</label>
+            <input type="number" id="special-attack" name="special-attack" min="0" max="255" value="50">
+            <label for="special-defense">Special Defense</label>
+            <input type="number" id="special-defense" name="special-defense" min="0" max="255" value="50">
+            <label for="speed">Speed</label>
+            <input type="number" id="speed" name="speed" min="0" max="255" value="50">
+          </div>
+          <label>Types</label>
+          <div class="types-checkboxes">
+            <label><input type="checkbox" name="type" value="fire"> Fire</label>
+            <label><input type="checkbox" name="type" value="water"> Water</label>
+            <label><input type="checkbox" name="type" value="grass"> Grass</label>
+            <label><input type="checkbox" name="type" value="electric"> Electric</label>
+            <label><input type="checkbox" name="type" value="ice"> Ice</label>
+            <label><input type="checkbox" name="type" value="fighting"> Fighting</label>
+            <label><input type="checkbox" name="type" value="poison"> Poison</label>
+            <label><input type="checkbox" name="type" value="ground"> Ground</label>
+            <label><input type="checkbox" name="type" value="flying"> Flying</label>
+            <label><input type="checkbox" name="type" value="psychic"> Psychic</label>
+            <label><input type="checkbox" name="type" value="bug"> Bug</label>
+            <label><input type="checkbox" name="type" value="rock"> Rock</label>
+            <label><input type="checkbox" name="type" value="ghost"> Ghost</label>
+            <label><input type="checkbox" name="type" value="dragon"> Dragon</label>
+            <label><input type="checkbox" name="type" value="dark"> Dark</label>
+            <label><input type="checkbox" name="type" value="steel"> Steel</label>
+            <label><input type="checkbox" name="type" value="fairy"> Fairy</label>
+          </div>
+          <div id="create-error" class="auth-error hidden"></div>
+          <button type="submit" class="auth-btn">Post to Landing Page</button>
+        </form>
+      </div>
+    </div>
+  </main>
+  <script src="create.js"></script>
+</body>
+</html>

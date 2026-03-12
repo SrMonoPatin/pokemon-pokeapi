@@ -69,8 +69,9 @@ function render(data) {
   });
 
   const img = document.getElementById('pokemon-sprite');
-  img.src = data.sprite_url || '';
+  img.src = data.sprite_url || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
   img.alt = data.name;
+  img.style.display = data.sprite_url ? 'block' : 'none';
 
   document.getElementById('pokemon-description').textContent =
     data.description || 'No description available.';
@@ -96,8 +97,32 @@ function showError(msg) {
   error.textContent = msg;
 }
 
+async function fetchCustomPokemon(id) {
+  const res = await fetch(`/api/custom-pokemon/${id}`, { credentials: 'include' });
+  if (!res.ok) throw new Error('Custom Pokemon not found');
+  const data = await res.json();
+  return {
+    name: data.name,
+    description: data.description || 'No description available.',
+    sprite_url: data.sprite_data || '',
+    stats: data.stats || [],
+    types: data.types || [],
+  };
+}
+
 async function init() {
+  const customId = getQueryParam('custom');
   const name = getQueryParam('name')?.toLowerCase();
+
+  if (customId) {
+    try {
+      const data = await fetchCustomPokemon(customId);
+      render(data);
+    } catch (err) {
+      showError(err.message || 'Failed to load Pokemon.');
+    }
+    return;
+  }
 
   if (!name || !ALLOWED.includes(name)) {
     showError('Invalid Pokemon. Redirecting...');

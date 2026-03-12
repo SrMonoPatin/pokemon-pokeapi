@@ -1,12 +1,6 @@
-CREATE TABLE IF NOT EXISTS pokemon (
-  id INT PRIMARY KEY,
-  name VARCHAR(50) NOT NULL,
-  description TEXT,
-  sprite_url VARCHAR(500),
-  stats_json JSON,
-  types_json JSON,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+-- Run this if you have an existing database and need the new tables.
+-- Option 1: docker-compose exec mysql mysql -u root -p pokemon_db < server/migrate-add-users-custom.sql
+-- Option 2: docker-compose down -v && docker-compose up (wipes data, recreates everything)
 
 CREATE TABLE IF NOT EXISTS users (
   id INT AUTO_INCREMENT PRIMARY KEY,
