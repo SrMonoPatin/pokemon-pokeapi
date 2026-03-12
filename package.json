@@ -2,6 +2,12 @@
   "name": "pokemon-pokeapi",
   "private": true,
   "scripts": {
-    "start": "npx serve -l 3000"
+    "start": "node server/index.js",
+    "serve": "npx serve -l 3000"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mysql2": "^3.6.5"
   }
 }

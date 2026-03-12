@@ -1,5 +1,4 @@
 const ALLOWED = ['pikachu', 'squirtle', 'bulbasaur', 'charmander'];
-const API_BASE = 'https://pokeapi.co/api/v2';
 
 function getQueryParam(name) {
   const params = new URLSearchParams(window.location.search);
@@ -14,27 +13,13 @@ function hide(el) {
   el.classList.add('hidden');
 }
 
-function getDescription(species) {
-  const entry = species.flavor_text_entries?.find(
-    (e) => e.language?.name === 'en'
-  );
-  if (!entry) return 'No description available.';
-  return entry.flavor_text.replace(/\n|\f/g, ' ').trim();
-}
-
 async function fetchPokemon(name) {
-  const res = await fetch(`${API_BASE}/pokemon/${name}`);
+  const res = await fetch(`/api/pokemon/${name}`);
   if (!res.ok) throw new Error('Pokemon not found');
   return res.json();
 }
 
-async function fetchSpecies(id) {
-  const res = await fetch(`${API_BASE}/pokemon-species/${id}`);
-  if (!res.ok) throw new Error('Species not found');
-  return res.json();
-}
-
-function render(pokemon, species) {
+function render(data) {
   const loading = document.getElementById('loading');
   const error = document.getElementById('error');
   const detail = document.getElementById('pokemon-detail');
@@ -43,36 +28,31 @@ function render(pokemon, species) {
   hide(error);
   show(detail);
 
-  const sprite =
-    pokemon.sprites?.other?.['official-artwork']?.front_default ||
-    pokemon.sprites?.front_default;
-
   document.getElementById('pokemon-name').textContent =
-    pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1);
-  document.title = `${pokemon.name} | Pokemon`;
+    data.name.charAt(0).toUpperCase() + data.name.slice(1);
+  document.title = `${data.name} | Pokemon`;
 
   const typesEl = document.getElementById('pokemon-types');
   typesEl.innerHTML = '';
-  (pokemon.types || []).forEach((t) => {
+  (data.types || []).forEach((t) => {
     const span = document.createElement('span');
     span.className = 'type-badge';
-    span.textContent = t.type?.name || t;
+    span.textContent = t.name || t;
     typesEl.appendChild(span);
   });
 
   const img = document.getElementById('pokemon-sprite');
-  img.src = sprite || '';
-  img.alt = pokemon.name;
+  img.src = data.sprite_url || '';
+  img.alt = data.name;
 
-  document.getElementById('pokemon-description').textContent = getDescription(
-    species
-  );
+  document.getElementById('pokemon-description').textContent =
+    data.description || 'No description available.';
 
   const tbody = document.querySelector('#pokemon-stats tbody');
   tbody.innerHTML = '';
-  (pokemon.stats || []).forEach((s) => {
+  (data.stats || []).forEach((s) => {
     const row = document.createElement('tr');
-    const statName = (s.stat?.name || '').replace(/-/g, ' ');
+    const statName = (s.name || '').replace(/-/g, ' ');
     row.innerHTML = `<th>${statName}</th><td>${s.base_stat ?? ''}</td>`;
     tbody.appendChild(row);
   });
@@ -99,11 +79,8 @@ async function init() {
   }
 
   try {
-    const [pokemon, species] = await Promise.all([
-      fetchPokemon(name),
-      fetchPokemon(name).then((p) => fetchSpecies(p.id)),
-    ]);
-    render(pokemon, species);
+    const data = await fetchPokemon(name);
+    render(data);
   } catch (err) {
     showError(err.message || 'Failed to load Pokemon.');
   }
