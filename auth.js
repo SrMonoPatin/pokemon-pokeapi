@@ -28,12 +28,13 @@ function initAuth(mode, redirectTo) {
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        showError(errorEl, data.error || 'Something went wrong');
+        const msg = data.error || (res.status === 500 ? 'Server error. Try running with Docker.' : 'Something went wrong');
+        showError(errorEl, msg);
         return;
       }
       window.location.href = redirectTo;
     } catch (err) {
-      showError(errorEl, 'Network error. Make sure the server is running.');
+      showError(errorEl, 'Network error. Make sure Docker is running (docker compose up).');
     }
   });
 }

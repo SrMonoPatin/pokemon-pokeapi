@@ -10,6 +10,30 @@ const pool = mysql.createPool({
   queueLimit: 0,
 });
 
+async function ensureAuthTables() {
+  await pool.execute(`
+    CREATE TABLE IF NOT EXISTS users (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      email VARCHAR(255) UNIQUE NOT NULL,
+      password_hash VARCHAR(255) NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+  await pool.execute(`
+    CREATE TABLE IF NOT EXISTS custom_pokemon (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      user_id INT NOT NULL,
+      name VARCHAR(100) NOT NULL,
+      description TEXT,
+      sprite_data LONGTEXT,
+      stats_json JSON,
+      types_json JSON,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    )
+  `);
+}
+
 async function getPokemon(name) {
   const [rows] = await pool.execute(
     'SELECT id, name, description, sprite_url, stats_json, types_json FROM pokemon WHERE name = ?',
@@ -84,6 +108,7 @@ async function getAllCustomPokemon() {
 
 module.exports = {
   pool,
+  ensureAuthTables,
   getPokemon,
   savePokemon,
   createUser,

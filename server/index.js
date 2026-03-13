@@ -4,6 +4,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const {
+  ensureAuthTables,
   getPokemon,
   savePokemon,
   createUser,
@@ -222,6 +223,16 @@ app.post('/api/custom-pokemon', requireAuth, async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
-});
+async function start() {
+  try {
+    await ensureAuthTables();
+    console.log('Auth tables ready');
+  } catch (err) {
+    console.error('Failed to ensure auth tables:', err.message);
+  }
+  app.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
+  });
+}
+
+start();
