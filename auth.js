@@ -10,7 +10,7 @@ function hideError(el) {
 function initAuth(mode, redirectTo) {
   const form = document.getElementById(mode === 'login' ? 'login-form' : 'signup-form');
   const errorEl = document.getElementById('auth-error');
-  const endpoint = mode === 'login' ? '/api/auth/login' : '/api/auth/signup';
+  const path = mode === 'login' ? '/api/auth/login' : '/api/auth/signup';
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -19,22 +19,21 @@ function initAuth(mode, redirectTo) {
     const password = form.password.value;
 
     try {
-      const res = await fetch(endpoint, {
+      const res = await window.api.fetch(path, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
-        credentials: 'include',
       });
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        const msg = data.error || (res.status === 500 ? 'Server error. Try running with Docker.' : 'Something went wrong');
+        const msg = data.error || (res.status === 500 ? 'Server error. Check DEPLOY.md for live setup.' : 'Something went wrong');
         showError(errorEl, msg);
         return;
       }
+      if (data.token) window.api.setToken(data.token);
       window.location.href = redirectTo;
     } catch (err) {
-      showError(errorEl, 'Network error. Make sure Docker is running (docker compose up).');
+      showError(errorEl, 'Network error. Is the backend running? See DEPLOY.md for live setup.');
     }
   });
 }

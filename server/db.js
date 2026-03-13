@@ -1,14 +1,19 @@
 const mysql = require('mysql2/promise');
 
-const pool = mysql.createPool({
-  host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'pokemon_db',
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
-});
+const dbUrl = process.env.DATABASE_URL || process.env.MYSQL_URL;
+const pool = mysql.createPool(
+  dbUrl
+    ? dbUrl
+    : {
+        host: process.env.DB_HOST || 'localhost',
+        user: process.env.DB_USER || 'root',
+        password: process.env.DB_PASSWORD || '',
+        database: process.env.DB_NAME || 'pokemon_db',
+        waitForConnections: true,
+        connectionLimit: 10,
+        queueLimit: 0,
+      }
+);
 
 async function ensureAuthTables() {
   await pool.execute(`

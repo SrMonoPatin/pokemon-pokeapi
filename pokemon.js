@@ -98,7 +98,7 @@ function showError(msg) {
 }
 
 async function fetchCustomPokemon(id) {
-  const res = await fetch(`/api/custom-pokemon/${id}`, { credentials: 'include' });
+  const res = await window.api.fetch(`/api/custom-pokemon/${id}`);
   if (!res.ok) throw new Error('Custom Pokemon not found');
   const data = await res.json();
   return {

@@ -74,7 +74,7 @@ canvas.addEventListener('touchend', (e) => {
 // Auth check and redirect
 async function checkAuth() {
   try {
-    const res = await fetch('/api/auth/me', { credentials: 'include' });
+    const res = await window.api.fetch('/api/auth/me', { auth: true });
     if (res.status === 401) {
       window.location.href = 'login.html?next=create.html';
       return false;
@@ -89,7 +89,8 @@ async function checkAuth() {
 // Logout
 document.getElementById('logout-link').addEventListener('click', async (e) => {
   e.preventDefault();
-  await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+  await window.api.fetch('/api/auth/logout', { method: 'POST' });
+  window.api.setToken(null);
   window.location.href = 'index.html';
 });
 
@@ -115,10 +116,9 @@ document.getElementById('stats-form').addEventListener('submit', async (e) => {
   const sprite_data = canvas.toDataURL('image/png');
 
   try {
-    const res = await fetch('/api/custom-pokemon', {
+    const res = await window.api.fetch('/api/custom-pokemon', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
+      auth: true,
       body: JSON.stringify({
         name,
         description,

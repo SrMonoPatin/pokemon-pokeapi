@@ -1,6 +1,6 @@
 async function loadCustomPokemon() {
   try {
-    const res = await fetch('/api/custom-pokemon', { credentials: 'include' });
+    const res = await window.api.fetch('/api/custom-pokemon');
     if (!res.ok) return;
     const list = await res.json();
     const grid = document.getElementById('custom-pokemon-grid');

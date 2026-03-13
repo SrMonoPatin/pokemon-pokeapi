@@ -41,9 +41,13 @@ A Pokemon web app that fetches and caches Pokemon data in MySQL. Runs entirely i
 
 See `.env.example`. Default values work for local development. Create a `.env` file to override.
 
-## Custom Pokemon (New)
+## Custom Pokemon
 
 If you already had the app running before this feature was added, you need the new database tables. Either:
 
 - **Fresh start:** `docker compose down -v` then `docker compose up --build -d` (wipes existing data)
 - **Keep data:** Run the migration: `docker compose exec mysql mysql -u root -p pokemon_db < server/migrate-add-users-custom.sql` (use your DB password)
+
+## Auth on Live Website (GitHub Pages)
+
+To make signup/login work on **https://srmonopatin.github.io/pokemon-pokeapi/** (not just locally), deploy the backend to Railway and update `api-config.js`. See **[DEPLOY.md](DEPLOY.md)** for step-by-step instructions.

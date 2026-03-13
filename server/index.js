@@ -14,7 +14,8 @@ const {
   getCustomPokemonById,
   getAllCustomPokemon,
 } = require('./db');
-const { hashPassword, verifyPassword, requireAuth } = require('./auth');
+const { hashPassword, verifyPassword, signToken, verifyToken, requireAuth } = require('./auth');
+const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -22,6 +23,13 @@ const POKEAPI_BASE = 'https://pokeapi.co/api/v2';
 const SESSION_SECRET = process.env.SESSION_SECRET || 'pokemon-secret-change-in-production';
 
 app.use(express.json());
+const corsOrigins = [
+  'https://srmonopatin.github.io',
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+  process.env.CORS_ORIGIN,
+].filter(Boolean);
+app.use(cors({ origin: corsOrigins, credentials: true }));
 app.use(cookieParser());
 app.use(
   session({
@@ -121,7 +129,8 @@ app.post('/api/auth/signup', async (req, res) => {
     const userId = await createUser(email, passwordHash);
     req.session.userId = userId;
     req.session.email = email;
-    res.json({ email });
+    const token = signToken(userId, email);
+    res.json({ email, token });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message || 'Signup failed' });
@@ -140,7 +149,8 @@ app.post('/api/auth/login', async (req, res) => {
     }
     req.session.userId = user.id;
     req.session.email = user.email;
-    res.json({ email: user.email });
+    const token = signToken(user.id, user.email);
+    res.json({ email: user.email, token });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message || 'Login failed' });
@@ -153,10 +163,14 @@ app.post('/api/auth/logout', (req, res) => {
 });
 
 app.get('/api/auth/me', (req, res) => {
-  if (!req.session?.userId) {
-    return res.status(401).json({ error: 'Not authenticated' });
+  const authHeader = req.headers.authorization;
+  const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
+  if (token) {
+    const payload = verifyToken(token);
+    if (payload) return res.json({ email: payload.email });
   }
-  res.json({ email: req.session.email });
+  if (req.session?.userId) return res.json({ email: req.session.email });
+  return res.status(401).json({ error: 'Not authenticated' });
 });
 
 // Custom Pokemon
@@ -208,8 +222,9 @@ app.post('/api/custom-pokemon', requireAuth, async (req, res) => {
     if (!name || !name.trim()) {
       return res.status(400).json({ error: 'Name required' });
     }
+    const userId = req.userId || req.session?.userId;
     const id = await saveCustomPokemon({
-      userId: req.session.userId,
+      userId,
       name: name.trim(),
       description: description || '',
       sprite_data: sprite_data || null,
